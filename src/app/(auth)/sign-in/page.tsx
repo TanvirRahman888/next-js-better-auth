@@ -1,16 +1,19 @@
 "use client";
 
 import { signIn } from "@/lib/auth-client";
+import { Eye, EyeSlash } from "@gravity-ui/icons";
 import {
   Button,
   Description,
   FieldError,
   Form,
   Input,
+  InputGroup,
   Label,
   Link,
   TextField,
 } from "@heroui/react";
+import { useState } from "react";
 
 const SignInPage = () => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,6 +32,7 @@ const SignInPage = () => {
 
     console.log("LogIn:", redData, error);
   };
+  const [isVisible, setIsVisible] = useState(false);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-background">
@@ -40,10 +44,8 @@ const SignInPage = () => {
 
       <div className="relative mx-auto flex min-h-screen max-w-7xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-default-200 bg-content1 shadow-xl lg:grid-cols-[0.9fr_1.1fr]">
-          
           {/* Left Section */}
           <div className="relative hidden overflow-hidden bg-linear-to-br from-slate-950 via-indigo-950 to-violet-900 p-10 text-white lg:flex lg:flex-col lg:justify-between">
-            
             {/* Decorative glow */}
             <div className="absolute -left-20 -top-20 h-64 w-64 rounded-full bg-violet-500/20 blur-3xl" />
             <div className="absolute -bottom-24 -right-20 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl" />
@@ -98,7 +100,6 @@ const SignInPage = () => {
           {/* Right Section */}
           <div className="p-6 sm:p-10 lg:p-12">
             <div className="mx-auto w-full max-w-md">
-              
               {/* Heading */}
               <div className="mb-8">
                 <p className="mb-2 text-sm font-semibold text-primary">
@@ -138,20 +139,17 @@ const SignInPage = () => {
                     Email address
                   </Label>
 
-                  <Input
-                    placeholder="john@example.com"
-                    className="h-12"
-                  />
+                  <Input placeholder="john@example.com" className="h-12" />
 
                   <FieldError className="text-sm" />
                 </TextField>
 
-                {/* Password */}
-                <TextField
+                {/* Password 1*/}
+                {/* <TextField
                   isRequired
                   minLength={8}
                   name="password"
-                  type="password"
+                  type={isVisible ? "text" : "password"}
                   validate={(value) => {
                     if (value.length < 8) {
                       return "Password must be at least 8 characters";
@@ -169,9 +167,7 @@ const SignInPage = () => {
                   }}
                 >
                   <div className="flex items-center justify-between">
-                    <Label className="mb-2 text-sm font-medium">
-                      Password
-                    </Label>
+                    <Label className="mb-2 text-sm font-medium">Password</Label>
 
                     <Link
                       href="#"
@@ -181,11 +177,69 @@ const SignInPage = () => {
                     </Link>
                   </div>
 
-                  <Input
-                    placeholder="Enter your password"
-                    className="h-12"
-                  />
+                  <Input placeholder="Enter your password" className="h-12" />
+                  <Description className="mt-2 text-xs text-default-500">
+                    Use the password associated with your account.
+                  </Description>
 
+                  <FieldError className="text-sm" />
+                </TextField> */}
+
+                {/* password 2 */}
+                <TextField
+                  className="w-full"
+                  name="password"
+                  isRequired
+                  minLength={8}
+                  validate={(value) => {
+                    if (value.length < 8) {
+                      return "Password must be at least 8 characters";
+                    }
+
+                    if (!/[A-Z]/.test(value)) {
+                      return "Password must contain at least one uppercase letter";
+                    }
+
+                    if (!/[0-9]/.test(value)) {
+                      return "Password must contain at least one number";
+                    }
+
+                    return null;
+                  }}
+                >
+                  <div className="flex justify-between">
+                    <Label>Password</Label>
+                    <Link
+                      href="#"
+                      className="mb-2 text-xs font-medium text-primary"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <InputGroup>
+                    <InputGroup.Input
+                      className="w-full h-12"
+                      type={isVisible ? "text" : "password"}
+                      placeholder="Enter your password"
+                    />
+                    <InputGroup.Suffix className="pe-0">
+                      <Button
+                        isIconOnly
+                        aria-label={
+                          isVisible ? "Hide password" : "Show password"
+                        }
+                        size="sm"
+                        variant="ghost"
+                        onPress={() => setIsVisible(!isVisible)}
+                      >
+                        {isVisible ? (
+                          <Eye className="size-4" />
+                        ) : (
+                          <EyeSlash className="size-4" />
+                        )}
+                      </Button>
+                    </InputGroup.Suffix>
+                  </InputGroup>
                   <Description className="mt-2 text-xs text-default-500">
                     Use the password associated with your account.
                   </Description>
@@ -227,10 +281,7 @@ const SignInPage = () => {
               {/* Sign up link */}
               <p className="text-center text-sm text-default-500">
                 Don&apos;t have an account?{" "}
-                <Link
-                  href="/sign-up"
-                  className="font-semibold text-primary"
-                >
+                <Link href="/sign-up" className="font-semibold text-primary">
                   Create account
                 </Link>
               </p>

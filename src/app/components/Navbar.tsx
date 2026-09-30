@@ -1,9 +1,31 @@
 "use client";
 import { useState } from "react";
-import { Link, Button } from "@heroui/react";
+import { Link, Button, Spinner } from "@heroui/react";
+import { signOut, useSession } from "@/lib/auth-client";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data: session, isPending } = useSession();
+  console.log("Users session in Navbar ", session);
+  if (isPending) {
+    return (
+      <nav className="sticky top-0 z-40 w-full border-b border-white/10  backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-5xl items-center justify-center px-6">
+          <div className="flex items-center gap-3 rounded-full border border-default-200 bg-background/70 px-5 py-2 shadow-lg backdrop-blur-md">
+            <div className="relative flex h-6 w-6 items-center justify-center">
+              <div className="absolute h-6 w-6 animate-spin rounded-full border-2 border-transparent border-t-violet-500 border-r-fuchsia-500 border-b-cyan-500" />
+
+              <div className="h-2 w-2 animate-pulse rounded-full " />
+            </div>
+
+            <span className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 bg-clip-text text-sm font-semibold text-transparent">
+              Loading...
+            </span>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   const links = (
     <>
@@ -22,12 +44,23 @@ export default function Navbar() {
   );
   const authLinks = (
     <>
-      <Link href="/sign-in" className="block py-2">
-        <Button className="w-full">Sign In</Button>
-      </Link>
-      <Link href="/sign-up" className="block py-2">
-        <Button className="w-full">Sign Up</Button>
-      </Link>
+      {session?.user ? (
+        <>
+          <span>Welcome {session?.user?.name}</span>
+          <Button onClick={() => signOut()} className="bg-accent">
+            Sign Out
+          </Button>
+        </>
+      ) : (
+        <>
+          <Link href="/sign-in" className="block py-2">
+            <Button className="w-full">Sign In</Button>
+          </Link>
+          <Link href="/sign-up" className="block py-2">
+            <Button className="w-full">Sign Up</Button>
+          </Link>
+        </>
+      )}
     </>
   );
 
